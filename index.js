@@ -1,14 +1,34 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-
-const PORT = process.env.PORT || 3000;
-
+require("dotenv").config();
 app.use(express.json());
+const PORT = process.env.PORT || 3000;
+const connectToDB = require("./database/database");
+const httpStatusText = require("./utils/httpStatusText");
 
-app.get('/', (req, res) => {
-    res.send('Hello, World! Welcome to Express.');
+// routes
+const authRouter = require("./routes/authRouter");
+// middlewares
+
+app.use("/api/auth", authRouter);
+
+app.use("*", (req, res, next) => {
+    res.status(404).json({
+        status: httpStatusText.ERROR,
+        message: "Not Found.",
+        data: null,
+    });
 });
 
+app.use((err, req, res, next) => {
+    res.status(err.statusCode || 500).json({
+        status: err.statusText || httpStatusText.ERROR,
+        message: err.message,
+        data: null,
+    });
+});
+
+connectToDB();
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
 });
