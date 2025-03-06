@@ -4,7 +4,7 @@ const {
     addCategory,
 } = require("../controllers/categories.controller");
 const validateSchema = require("../middlewares/validateSchema");
-const categorySchema = require("../utils/validation/categoryValidation");
+const { categorySchema } = require("../utils/validation/categoryValidation");
 
 router.route("/").get(getCategories);
 router.route("/").post(validateSchema(categorySchema), addCategory);
