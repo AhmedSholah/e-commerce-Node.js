@@ -27,6 +27,8 @@ const register = asyncWrapper(async function (req, res, next) {
         role,
     });
 
+    console.log(newUser);
+
     const tokenPayload = {
         id: newUser._id,
         role,
@@ -37,4 +39,36 @@ const register = asyncWrapper(async function (req, res, next) {
     res.status(201).json({ status: httpStatusText.SUCCESS, data: { token } });
 });
 
-module.exports = { register };
+const login = asyncWrapper(async (req, res, next) => {
+    const { email, password } = req.body;
+    const foundUser = await UserModel.findOne({ email });
+
+    if (!foundUser) {
+        return next(
+            AppError.create("User Not Found", 404, httpStatusText.FAIL)
+        );
+    }
+
+    const isCorretPassword = await bcyrptjs.compare(
+        password,
+        foundUser.password
+    );
+    if (!isCorretPassword) {
+        return next(
+            AppError.create("Invalid Credentials", 501, httpStatusText.FAIL)
+        );
+    }
+
+    const tokenPayload = {
+        id: foundUser._id,
+        role: foundUser.role,
+    };
+
+    const token = await generateJWT(tokenPayload);
+
+    return res
+        .status(200)
+        .json({ status: httpStatusText.SUCCESS, data: { token } });
+});
+
+module.exports = { register, login };

@@ -8,9 +8,13 @@ const httpStatusText = require("./utils/httpStatusText");
 
 // routes
 const authRouter = require("./routes/authRouter");
+const categoriesRouter = require("./routes/categoriesRouter");
+
 // middlewares
 
 app.use("/api/auth", authRouter);
+
+app.use("/api/categories", categoriesRouter);
 
 app.use("*", (req, res, next) => {
     res.status(404).json({
