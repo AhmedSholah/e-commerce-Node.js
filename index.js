@@ -1,16 +1,21 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const connectToDB = require("./database/database");
 const httpStatusText = require("./utils/httpStatusText");
 
-// routes
-const authRouter = require("./routes/authRouter");
-// middlewares
+// Routes
+const authRoutes = require("./routes/auth.routes");
+const categoriesRoutes = require("./routes/categorie.routes");
+const productsRoutes = require("./routes/product.routes");
 
-app.use("/api/auth", authRouter);
+// Middleware
+app.use(express.json());
+
+app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoriesRoutes);
+app.use("/api/products", productsRoutes);
 
 app.use("*", (req, res, next) => {
     res.status(404).json({
