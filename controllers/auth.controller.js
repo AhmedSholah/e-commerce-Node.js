@@ -16,6 +16,8 @@ const register = asyncWrapper(async function (req, res, next) {
         );
     }
 
+    await UserModel.validate(req.body);
+
     const hashedPassword = await bcyrptjs.hash(password, 12);
 
     const newUser = await UserModel.create({
@@ -26,8 +28,6 @@ const register = asyncWrapper(async function (req, res, next) {
         gender,
         role,
     });
-
-    console.log(newUser);
 
     const tokenPayload = {
         id: newUser._id,
