@@ -15,7 +15,11 @@ router
         validateSchema(cartValidation.addToCartSchema),
         cartController.addToCart
     )
-    .patch(isAuthenticated, validateSchema(), cartController.updateCartItem);
+    .patch(
+        isAuthenticated,
+        validateSchema(cartValidation.addToCartSchema),
+        cartController.updateCartItem
+    );
 
 router.route("/:productId").delete(
     isAuthenticated,
