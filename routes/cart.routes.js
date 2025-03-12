@@ -15,12 +15,13 @@ router
         validateSchema(cartValidation.addToCartSchema),
         cartController.addToCart
     )
-    .patch(isAuthenticated, validateSchema(), cartController.updateCartItem)
-    .delete(
-        isAuthenticated,
-        validateSchema(cartValidation.removeCartItemSchema),
-        cartController.removeCartItem
-    );
+    .patch(isAuthenticated, validateSchema(), cartController.updateCartItem);
+
+router.route("/:productId").delete(
+    isAuthenticated,
+    // validateSchema(cartValidation.removeCartItemSchema),
+    cartController.removeCartItem
+);
 
 router.route("/clear").delete(isAuthenticated, cartController.clearCart);
 

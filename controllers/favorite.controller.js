@@ -54,7 +54,7 @@ const addToFavoriteItem = asyncWrapper(async (req, res, next) => {
 });
 
 const deleteFavoriteItem = asyncWrapper(async (req, res, next) => {
-    const { productId } = req.body;
+    const productId = req.params.productId;
     const { userId } = req.tokenPayload;
 
     await FavoriteModel.findOneAndUpdate(

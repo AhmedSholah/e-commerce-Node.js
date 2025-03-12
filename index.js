@@ -7,7 +7,7 @@ const httpStatusText = require("./utils/httpStatusText");
 
 // Routes
 const authRoutes = require("./routes/auth.routes");
-const categoriesRoutes = require("./routes/categorie.routes");
+const categoriesRoutes = require("./routes/category.routes");
 const productsRoutes = require("./routes/product.routes");
 const cartRoutes = require("./routes/cart.routes");
 const favoriteRoutes = require("./routes/favorite.routes");

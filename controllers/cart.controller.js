@@ -88,7 +88,7 @@ const addToCart = asyncWrapper(async (req, res, next) => {
 const updateCartItem = asyncWrapper(async (req, res, next) => {});
 
 const removeCartItem = asyncWrapper(async (req, res, next) => {
-    const { productId } = req.body;
+    const productId = req.params.productId;
     const { userId } = req.tokenPayload;
 
     await CartModel.findOneAndUpdate(

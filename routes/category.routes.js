@@ -2,7 +2,7 @@ const router = require("express").Router();
 const {
     getCategories,
     addCategory,
-} = require("../controllers/categorie.controller");
+} = require("../controllers/category.controller");
 const validateSchema = require("../middlewares/validateSchema");
 const { categorySchema } = require("../utils/validation/categoryValidation");
 

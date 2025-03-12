@@ -35,7 +35,7 @@ const updateProductSchema = z
         discountAmount: z.number().min(0).optional(),
         discountPercentage: z.number().min(0).max(100).optional(),
         category: objectIdSchema.optional(),
-        description: z.string().min(100).max(500).optional(),
+        description: z.string().min(100).max(5000).optional(),
         quantity: z.number().min(0).optional(),
         weight: z.number().min(0).optional(),
         dimensions: z
