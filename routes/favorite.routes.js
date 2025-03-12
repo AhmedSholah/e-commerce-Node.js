@@ -1,11 +1,21 @@
 const router = require("express").Router();
 const favoriteController = require("../controllers/favorite.controller");
 const isAuthenticated = require("../middlewares/isAuthenticated");
+const validateSchema = require("../middlewares/validateSchema");
+const favoriteValidation = require("../utils/validation/favoriteValidation");
 
 router
     .route("/")
     .get(isAuthenticated, favoriteController.getFavorite)
-    .post(isAuthenticated, favoriteController.addToFavoriteItem)
-    .delete(isAuthenticated, favoriteController.deleteFavoriteItem);
+    .post(
+        isAuthenticated,
+        validateSchema(favoriteValidation.favoriteSchema),
+        favoriteController.addToFavoriteItem
+    )
+    .delete(
+        isAuthenticated,
+        validateSchema(favoriteValidation.favoriteSchema),
+        favoriteController.deleteFavoriteItem
+    );
 
 module.exports = router;
