@@ -4,6 +4,8 @@ const AppError = require("../utils/AppError");
 const httpStatusText = require("../utils/httpStatusText");
 const bcyrptjs = require("bcryptjs");
 const generateJWT = require("../utils/generateJWT");
+const CartModel = require("../models/cart.model");
+const favoriteModel = require("../models/favorite.model");
 
 const register = asyncWrapper(async function (req, res, next) {
     const { username, email, password, image, gender, role } = req.body;
@@ -29,8 +31,11 @@ const register = asyncWrapper(async function (req, res, next) {
         role,
     });
 
+    await CartModel.create({ userId: newUser._id });
+    await favoriteModel.create({ userId: newUser._id });
+
     const tokenPayload = {
-        id: newUser._id,
+        userId: newUser._id,
         role,
     };
 
@@ -60,7 +65,7 @@ const login = asyncWrapper(async (req, res, next) => {
     }
 
     const tokenPayload = {
-        id: foundUser._id,
+        userId: foundUser._id,
         role: foundUser.role,
     };
 

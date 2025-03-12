@@ -9,6 +9,8 @@ const httpStatusText = require("./utils/httpStatusText");
 const authRoutes = require("./routes/auth.routes");
 const categoriesRoutes = require("./routes/categorie.routes");
 const productsRoutes = require("./routes/product.routes");
+const cartRoutes = require("./routes/cart.routes");
+const favoriteRoutes = require("./routes/favorite.routes");
 
 // Middleware
 app.use(express.json());
@@ -16,6 +18,8 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/products", productsRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/favorite", favoriteRoutes);
 
 app.use("*", (req, res, next) => {
     res.status(404).json({

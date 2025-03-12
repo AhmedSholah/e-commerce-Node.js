@@ -45,10 +45,6 @@ const userSchema = new mongoose.Schema({
         enum: ["client", "seller", "admin"],
         default: "client",
     },
-    cart: {
-        type: Array,
-        default: [],
-    },
     wishlist: {
         type: Array,
         default: [],
