@@ -1,1 +1,11 @@
-{ "version": 2, "rewrites": [{ "source": "/(.*)", "destination": "/" }] }
+{
+    "version": 2,
+    "rewrites": [
+        { "source": "/services/(.*)", "destination": "/services/$1" },
+        {
+            "source": "/(.*\\.(js|json|md|env|gitignore))",
+            "destination": "/$1"
+        },
+        { "source": "/(.*)", "destination": "/" }
+    ]
+}
