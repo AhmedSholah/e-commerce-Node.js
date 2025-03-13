@@ -31,7 +31,7 @@ const register = asyncWrapper(async function (req, res, next) {
         role,
     });
 
-    await CartModel.create({ userId: newUser._id });
+    await CartModel.create({ user: newUser._id });
     await favoriteModel.create({ userId: newUser._id });
 
     const tokenPayload = {

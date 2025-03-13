@@ -86,11 +86,13 @@ const updateCartItem = asyncWrapper(async (req, res, next) => {
 
 const removeCartItem = asyncWrapper(async (req, res, next) => {
     const productId = req.params.productId;
-    const userId = req.tokenPayload;
-    const cart = CartModel.findOne({ user: userId });
+    const { userId } = req.tokenPayload;
+    const cart = await CartModel.findOne({ user: userId });
+
     if (!cart) {
         return next(AppError.create("Cart Not Found"));
     }
+
     cart.items = cart.items.filter(
         (item) => item.product.toString() !== productId
     );
@@ -100,6 +102,7 @@ const removeCartItem = asyncWrapper(async (req, res, next) => {
 });
 
 const clearCart = asyncWrapper(async (req, res, next) => {
+    console.log(req.tokenPayload);
     const { userId } = req.tokenPayload;
 
     const cart = await CartModel.findOne({ user: userId });

@@ -81,7 +81,20 @@ const productSchema = new mongoose.Schema(
             required: true,
         },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+    }
 );
+
+productSchema.virtual("priceAfterDiscount").get(function () {
+    const calculatedPrice =
+        this.price -
+        this.discountAmount -
+        this.price * (this.discountPercentage / 100);
+
+    return Math.max(calculatedPrice, 0);
+});
 
 module.exports = mongoose.model("Product", productSchema);

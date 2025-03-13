@@ -18,7 +18,7 @@ const getAllUsers = asyncWrapper(async (req, res, next) => {
 // For Admin Use
 const getUser = asyncWrapper(async (req, res, next) => {
     const id = req.params.id;
-    const user = UserModel.findOne(
+    const user = await UserModel.findOne(
         { _id: id },
         { __v: false, password: false }
     );
@@ -35,7 +35,7 @@ const getUser = asyncWrapper(async (req, res, next) => {
 // For Current User Use
 const getCurrentUser = asyncWrapper(async (req, res, next) => {
     const { userId } = req.tokenPayload;
-    const currentUser = UserModel.findById(userId, {
+    const currentUser = await UserModel.findById(userId, {
         __v: false,
         password: false,
     });
@@ -74,7 +74,7 @@ const updateUser = asyncWrapper(async (req, res, next) => {
 });
 
 const deleteUser = asyncWrapper(async (req, res, next) => {
-    const { userId, role } = req.tokenPayload;
+    const { userId } = req.tokenPayload;
     const user = await UserModel.findById(userId, {
         __v: false,
         password: false,
@@ -84,9 +84,7 @@ const deleteUser = asyncWrapper(async (req, res, next) => {
             AppError.create("User Not Found", 404, httpStatusText.FAIL)
         );
     }
-    // const hasAccess = role === "admin" || "user";
-    // if (hasAccess) {
-    // }
+
     await user.remove();
     return res.status(200).json({ status: httpStatusText.SUCCESS, data: null });
 });
@@ -98,8 +96,3 @@ module.exports = {
     deleteUser,
     getCurrentUser,
 };
-
-// if (userUpdated.password) {
-//     const hashedPassword = await bcrypt.hash(userUpdated.password, 10);
-//     userUpdated.password = hashedPassword;
-// }
