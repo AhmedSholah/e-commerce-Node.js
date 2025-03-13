@@ -11,6 +11,8 @@ const categoriesRoutes = require("./routes/category.routes");
 const productsRoutes = require("./routes/product.routes");
 const cartRoutes = require("./routes/cart.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
+const userRoutes = require("./routes/user.routes");
+const orderRoutes = require("./routes/order.routes");
 
 // Middleware
 app.use(express.json());
@@ -20,6 +22,8 @@ app.use("/api/categories", categoriesRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/favorite", favoriteRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.use("*", (req, res, next) => {
     res.status(404).json({

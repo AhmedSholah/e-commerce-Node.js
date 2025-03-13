@@ -130,9 +130,6 @@ const deleteOneProduct = asyncWrapper(async (req, res, next) => {
     const isAdmin = role === "admin";
     const isOwner = product.soldBy.toString() === userId.toString();
 
-    console.log(isAdmin);
-    console.log(isOwner);
-
     if (!isAdmin && !isOwner) {
         return next(AppError.create("Unauthorized", 401, httpStatusText.FAIL));
     }
