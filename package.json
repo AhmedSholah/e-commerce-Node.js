@@ -19,9 +19,5 @@
     "homepage": "https://github.com/Ahmedkx/Angular-Project-Back-End#readme",
     "dependencies": {
         "express": "^4.21.2"
-    },
-    "devDependencies": {
-        "@types/node": "^22.13.10",
-        "@vercel/node": "^5.1.13"
     }
 }
