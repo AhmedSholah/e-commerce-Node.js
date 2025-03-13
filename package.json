@@ -1,24 +1,27 @@
 {
-  "name": "angular-project-back-end",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Ahmedkx/Angular-Project-Back-End.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Ahmedkx/Angular-Project-Back-End/issues"
-  },
-  "homepage": "https://github.com/Ahmedkx/Angular-Project-Back-End#readme",
-  "dependencies": {
-    "@vercel/node": "^5.1.13",
-    "express": "^4.21.2"
-  }
+    "name": "angular-project-back-end",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Ahmedkx/Angular-Project-Back-End.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Ahmedkx/Angular-Project-Back-End/issues"
+    },
+    "homepage": "https://github.com/Ahmedkx/Angular-Project-Back-End#readme",
+    "dependencies": {
+        "express": "^4.21.2"
+    },
+    "devDependencies": {
+        "@types/node": "^22.13.10",
+        "@vercel/node": "^5.1.13"
+    }
 }
