@@ -10,7 +10,6 @@ const getAllOrders = asyncWrapper(async (req, res, next) => {});
 const createOrder = asyncWrapper(async (req, res, next) => {
     const { userId } = req.tokenPayload;
     const { shippingAddress, paymentMethod } = req.body;
-
     const cart = await CartModel.findOne({ user: userId }).populate(
         "items.product"
     );
@@ -18,29 +17,52 @@ const createOrder = asyncWrapper(async (req, res, next) => {
     if (!cart.items || cart.items.length == 0) {
         return next(AppError.create("Cart Is Empty"));
     }
-    // let totalPrice = 0;
-    // let orderItemsArr = [];
+    let totalPrice = 0;
+    let orderItemsArr = [];
 
-    // for (let item of cart.items) {
-    //     const product = item.product;
+    for (let item of cart.items) {
+        const product = item.product;
 
-    //     if (product.quantity < item.quantity) {
-    //         return next(AppError.create(`${product.name} is out of stock`));
-    //     }
-    //     let finalPrice = product.price;
-    //     if (product.discountAmount > 0) {
-    //         finalPrice -= product.discountAmount;
-    //     } else if (product.discountPercentage > 0) {
-    //         finalPrice -= (product.price * product.discountPercentage) / 100;
-    //     }
-    //     if (finalPrice < 0) finalPrice = 0;
-    //     totalPrice += finalPrice * item.quantity;
+        if (product.quantity < item.quantity) {
+            return next(AppError.create(`${product.name} is out of stock`));
+        }
+        let finalPrice = product.price;
+        if (product.discountAmount > 0) {
+            finalPrice -= product.discountAmount;
+        } else if (product.discountPercentage > 0) {
+            finalPrice -= (product.price * product.discountPercentage) / 100;
+        }
+        if (finalPrice < 0) finalPrice = 0;
+        totalPrice += finalPrice * item.quantity;
 
-    //     product.quantity -= item.quantity;
-    //     await product.save();
-    // }
+        product.quantity -= item.quantity;
+        await product.save();
+        orderItemsArr.push({
+            product: product._id,
+            quantity: item.quantity,
+            price: finalPrice,
+        });
+    }
+
+    const order = new OrderModel({
+        user: userId,
+        items: orderItemsArr,
+        shippingAddress,
+        paymentMethod,
+        totalPrice,
+        status: "Pending",
+    });
+
+    await order.save();
+    cart.items = [];
+    await cart.save();
+
+    return res.status(201).json({
+        status: httpStatusText.SUCCESS,
+        data: order,
+    });
 });
-// a
+
 const getOrder = asyncWrapper(async (req, res, next) => {});
 
 const getAllUsersOrders = asyncWrapper(async (req, res, next) => {});
@@ -51,3 +73,25 @@ module.exports = {
     getOrder,
     getAllUsersOrders,
 };
+
+// let totalPrice = 0;
+// let orderItemsArr = [];
+
+// for (let item of cart.items) {
+//     const product = item.product;
+
+//     if (product.quantity < item.quantity) {
+//         return next(AppError.create(`${product.name} is out of stock`));
+//     }
+//     let finalPrice = product.price;
+//     if (product.discountAmount > 0) {
+//         finalPrice -= product.discountAmount;
+//     } else if (product.discountPercentage > 0) {
+//         finalPrice -= (product.price * product.discountPercentage) / 100;
+//     }
+//     if (finalPrice < 0) finalPrice = 0;
+//     totalPrice += finalPrice * item.quantity;
+
+//     product.quantity -= item.quantity;
+//     await product.save();
+// }

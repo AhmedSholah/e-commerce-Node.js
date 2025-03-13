@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const isAuthenticated = require("../middlewares/asyncWrapper");
+const isAuthenticated = require("../middlewares/isAuthenticated");
 const checkRole = require("../middlewares/checkRole");
 const {
     getAllOrders,
@@ -13,7 +13,7 @@ router
     .get(isAuthenticated, getAllOrders)
     .post(isAuthenticated, createOrder);
 
-router.route("/:id").get(isAuthenticated, getOrder);
+// router.route("/:id").get(isAuthenticated, getOrder);
 // .patch(isAuthenticatedupdateOrder)
 // .delete(isAuthenticated, deleteOrder);
 

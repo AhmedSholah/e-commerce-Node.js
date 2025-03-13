@@ -98,17 +98,23 @@ const removeCartItem = asyncWrapper(async (req, res, next) => {
     );
     await cart.save();
 
-    return res.status(200).json({ status: httpStatusText.SUCCESS, data: cart });
+    const updatedCart = await CartModel.findOne({ user: userId }).populate(
+        "items.product"
+    );
+
+    return res
+        .status(200)
+        .json({ status: httpStatusText.SUCCESS, data: updatedCart });
 });
 
 const clearCart = asyncWrapper(async (req, res, next) => {
-    console.log(req.tokenPayload);
     const { userId } = req.tokenPayload;
 
     const cart = await CartModel.findOne({ user: userId });
     if (!cart) {
         return next(AppError.create("Cart Not Found"));
     }
+
     cart.items = [];
 
     await cart.save();
