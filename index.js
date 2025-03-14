@@ -7,8 +7,13 @@ const httpStatusText = require("./utils/httpStatusText");
 
 // Routes
 const authRoutes = require("./routes/auth.routes");
-const categoriesRoutes = require("./routes/categorie.routes");
+const categoriesRoutes = require("./routes/category.routes");
 const productsRoutes = require("./routes/product.routes");
+const cartRoutes = require("./routes/cart.routes");
+const favoriteRoutes = require("./routes/favorite.routes");
+const userRoutes = require("./routes/user.routes");
+const orderRoutes = require("./routes/order.routes");
+const storageRoutes = require("./routes/storage.routes");
 
 // Middleware
 app.use(express.json());
@@ -16,6 +21,11 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/products", productsRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/favorite", favoriteRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/storage", storageRoutes);
 
 app.use("*", (req, res, next) => {
     res.status(404).json({
@@ -37,3 +47,5 @@ connectToDB();
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
 });
+
+module.exports = app;

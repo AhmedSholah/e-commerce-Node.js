@@ -6,11 +6,16 @@ const validateSchema = require("../middlewares/validateSchema");
 const {
     addProductSchema,
     updateProductSchema,
+    getProductsSchema,
+    deleteProductSchema,
 } = require("../utils/validation/productValidation");
 
 router
     .route("/")
-    .get(productsController.getProducts)
+    .get(
+        validateSchema(getProductsSchema, "query"),
+        productsController.getProducts
+    )
     .post(
         isAuthenticated,
         checkRole(["seller", "admin"]),
@@ -30,6 +35,7 @@ router
     .delete(
         isAuthenticated,
         checkRole(["seller", "admin"]),
+        validateSchema(deleteProductSchema, "params"),
         productsController.deleteOneProduct
     );
 
