@@ -23,10 +23,12 @@ router
 
 router.route("/clear").delete(isAuthenticated, cartController.clearCart);
 
-router.route("/:productId").delete(
-    isAuthenticated,
-    // validateSchema(cartValidation.removeCartItemSchema),
-    cartController.removeCartItem
-);
+router
+    .route("/:productId")
+    .delete(
+        isAuthenticated,
+        validateSchema(cartValidation.removeCartItemSchema, "params"),
+        cartController.removeCartItem
+    );
 
 module.exports = router;

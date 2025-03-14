@@ -1,5 +1,7 @@
+const mongoose = require("mongoose");
 const asyncWrapper = require("../middlewares/asyncWrapper");
 const categoryModel = require("../models/category.model");
+const ProductModel = require("../models/product.model");
 const httpStatusText = require("../utils/httpStatusText");
 const AppError = require("../utils/AppError");
 
@@ -31,7 +33,39 @@ const addCategory = asyncWrapper(async (req, res, next) => {
     });
 });
 
+const deletCategory = asyncWrapper(async (req, res, next) => {
+    const { categoryId } = req.params;
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    const category = await categoryModel.findById(categoryId).session(session);
+    if (!category) {
+        await session.abortTransaction();
+        session.endSession();
+        return next(
+            AppError.create("Categorie Not Found", 404, httpStatusText.FAIL)
+        );
+    }
+
+    await ProductModel.deleteMany(
+        {
+            category: categoryId,
+        },
+        { session }
+    );
+
+    await categoryModel.findByIdAndDelete(categoryId).session(session);
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.json({
+        status: httpStatusText.SUCCESS,
+        data: null,
+    });
+});
+
 module.exports = {
     getCategories,
     addCategory,
+    deletCategory,
 };

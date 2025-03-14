@@ -1,24 +1,29 @@
 const router = require("express").Router();
-const {
-    getCategories,
-    addCategory,
-} = require("../controllers/category.controller");
+const categoryController = require("../controllers/category.controller");
 const validateSchema = require("../middlewares/validateSchema");
-const { categorySchema } = require("../utils/validation/categoryValidation");
+const categorySchema = require("../utils/validation/categoryValidation");
 
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const checkRole = require("../middlewares/checkRole");
 
 router
     .route("/")
-    .get(getCategories)
+    .get(categoryController.getCategories)
     .post(
         isAuthenticated,
-        validateSchema(categorySchema),
+        validateSchema(categorySchema.addCategorySchema),
         checkRole(["admin"]),
-        addCategory
+        categoryController.addCategory
     );
 // .patch(updateCategory)
-// .delete(deletCategory);
+
+router
+    .route("/:categoryId")
+    .delete(
+        isAuthenticated,
+        checkRole(["admin"]),
+        validateSchema(categorySchema.deletCategorySchema, "params"),
+        categoryController.deletCategory
+    );
 
 module.exports = router;

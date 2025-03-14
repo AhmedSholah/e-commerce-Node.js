@@ -13,10 +13,12 @@ router
         favoriteController.addToFavoriteItem
     );
 
-router.route("/:productId").delete(
-    isAuthenticated,
-    // validateSchema(favoriteValidation.favoriteSchema),
-    favoriteController.deleteFavoriteItem
-);
+router
+    .route("/:productId")
+    .delete(
+        isAuthenticated,
+        validateSchema(favoriteValidation.favoriteSchema, "params"),
+        favoriteController.deleteFavoriteItem
+    );
 
 module.exports = router;

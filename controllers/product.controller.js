@@ -2,21 +2,8 @@ const asyncWrapper = require("../middlewares/asyncWrapper");
 const ProductModel = require("../models/product.model");
 const httpStatusText = require("../utils/httpStatusText");
 const AppError = require("../utils/AppError");
-const { getProductsSchema } = require("../utils/validation/productValidation");
 
 const getProducts = asyncWrapper(async (req, res, next) => {
-    const result = getProductsSchema.safeParse(req.query);
-
-    if (!result.success) {
-        return next(
-            AppError.create(
-                "Invalid query parameters",
-                400,
-                httpStatusText.FAIL
-            )
-        );
-    }
-
     const query = req.query;
     const limit = query.limit || 4;
     const page = query.page || 1;

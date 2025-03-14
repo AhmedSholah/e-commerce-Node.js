@@ -105,17 +105,24 @@ const removeCartItem = asyncWrapper(async (req, res, next) => {
     const cart = await CartModel.findOne({ user: userId });
 
     if (!cart) {
-        return next(AppError.create("Cart Not Found"));
+        return next(
+            AppError.create("Cart Not Found", 404, httpStatusText.FAIL)
+        );
     }
 
     cart.items = cart.items.filter(
         (item) => item.product.toString() !== productId
     );
+
+    console.log(cart.items);
+
     await cart.save();
 
     const updatedCart = await CartModel.findOne({ user: userId }).populate(
         "items.product"
     );
+
+    console.log(updatedCart);
 
     return res
         .status(200)

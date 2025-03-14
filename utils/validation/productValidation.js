@@ -76,4 +76,15 @@ const getProductsSchema = z.object({
         .transform((val) => (val === "asc" ? 1 : -1)),
 });
 
-module.exports = { addProductSchema, updateProductSchema, getProductsSchema };
+const deleteProductSchema = z
+    .object({
+        productId: objectIdSchema,
+    })
+    .strict();
+
+module.exports = {
+    addProductSchema,
+    updateProductSchema,
+    getProductsSchema,
+    deleteProductSchema,
+};
