@@ -26,6 +26,7 @@ const addToCart = asyncWrapper(async (req, res, next) => {
     }
 
     let cart = await CartModel.findOne({ user: userId });
+
     if (!cart) {
         cart = new CartModel({
             user: userId,
@@ -36,7 +37,21 @@ const addToCart = asyncWrapper(async (req, res, next) => {
             (item) => item.product.toString() === productId
         );
 
-        if (itemIndex > -1) {
+        // if (cart.items[itemIndex]?.quantity) {
+        //     if (
+        //         (cart.items[itemIndex].quantity += quantity) > product.quantity
+        //     ) {
+        //         return next(
+        //             AppError.create(
+        //                 `Only ${product.quantity} items available in stock`,
+        //                 409,
+        //                 httpStatusText.FAIL
+        //             )
+        //         );
+        //     }
+        // }
+
+        if (itemIndex !== -1) {
             cart.items[itemIndex].quantity += quantity;
         } else {
             cart.items.push({ product: productId, quantity });
