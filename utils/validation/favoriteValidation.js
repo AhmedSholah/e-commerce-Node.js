@@ -1,4 +1,4 @@
-const z = require("zod");
+const { z } = require("zod");
 const objectIdSchema = require("./objectIdSchema");
 
 const favoriteSchema = z.object({
