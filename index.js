@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 require("dotenv").config();
 const PORT = process.env.PORT || 3000;
 const connectToDB = require("./database/database");
@@ -17,6 +18,7 @@ const storageRoutes = require("./routes/storage.routes");
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
