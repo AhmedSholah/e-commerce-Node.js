@@ -51,29 +51,30 @@ const getCurrentUser = asyncWrapper(async (req, res, next) => {
 
 const updateUser = asyncWrapper(async (req, res, next) => {
     const { userId } = req.tokenPayload;
+    const body = req.body;
 
-    try {
-        const updatedUser = await UserModel.findByIdAndUpdate(
-            userId,
-            req.body, // Update with the request body
-            {
-                new: true,
-                runValidators: true,
-            }
-        ).select("-__v -password");
+    const isEmailRegistered = await UserModel.findOne({ email: body.email });
 
-        if (!updatedUser) {
-            return next(
-                AppError.create("User Not Found", 404, httpStatusText.FAIL)
-            );
-        }
-
-        return res
-            .status(200)
-            .json({ status: httpStatusText.SUCCESS, data: updatedUser });
-    } catch (error) {
-        return next(AppError.create(error.message, 400, httpStatusText.ERROR));
+    if (isEmailRegistered) {
+        return next(
+            AppError.create("Email Already Exist", 404, httpStatusText.FAIL)
+        );
     }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, body, {
+        new: true,
+        runValidators: true,
+    }).select("-__v -password");
+
+    if (!updatedUser) {
+        return next(
+            AppError.create("User Not Found", 404, httpStatusText.FAIL)
+        );
+    }
+
+    return res
+        .status(200)
+        .json({ status: httpStatusText.SUCCESS, data: updatedUser });
 });
 
 const deleteUser = asyncWrapper(async (req, res, next) => {
