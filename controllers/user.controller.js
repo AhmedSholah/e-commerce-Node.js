@@ -51,26 +51,29 @@ const getCurrentUser = asyncWrapper(async (req, res, next) => {
 
 const updateUser = asyncWrapper(async (req, res, next) => {
     const { userId } = req.tokenPayload;
-    const user = await UserModel.findById(userId, {
-        __v: false,
-        password: false,
-    });
-    if (!user) {
-        return next(
-            AppError.create("User Not Found", 404, httpStatusText.FAIL)
-        );
+
+    try {
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            userId,
+            req.body, // Update with the request body
+            {
+                new: true,
+                runValidators: true,
+            }
+        ).select("-__v -password");
+
+        if (!updatedUser) {
+            return next(
+                AppError.create("User Not Found", 404, httpStatusText.FAIL)
+            );
+        }
+
+        return res
+            .status(200)
+            .json({ status: httpStatusText.SUCCESS, data: updatedUser });
+    } catch (error) {
+        return next(AppError.create(error.message, 400, httpStatusText.ERROR));
     }
-    let { userUpdated } = req.body;
-    await userUpdated.save();
-
-    const updateUser = await UserModel.findById(userId, {
-        __v: false,
-        password: false,
-    });
-
-    return res
-        .status(200)
-        .json({ status: httpStatusText.SUCCESS, data: updateUser });
 });
 
 const deleteUser = asyncWrapper(async (req, res, next) => {

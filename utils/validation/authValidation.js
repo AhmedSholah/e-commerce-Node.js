@@ -24,7 +24,8 @@ const loginSchema = z
 
 const registerSchema = z
     .object({
-        username: z.string().min(3),
+        firstName: z.string().min(3),
+        lastName: z.string().min(3),
         email: z.string().email(),
         password: passwordSchema,
         gender: z.enum(["male", "female"]),

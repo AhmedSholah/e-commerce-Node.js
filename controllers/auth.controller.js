@@ -11,7 +11,8 @@ const FavoriteModel = require("../models/favorite.model");
 const register = asyncWrapper(async function (req, res, next) {
     // const session = await mongoose.startSession();
     // session.startTransaction();
-    const { username, email, password, image, gender, role } = req.body;
+    const { firstName, lastName, email, password, image, gender, role } =
+        req.body;
 
     const oldUser = await UserModel.findOne({ email });
 
@@ -29,7 +30,8 @@ const register = asyncWrapper(async function (req, res, next) {
 
     const newUser = await UserModel.create(
         {
-            username,
+            firstName,
+            lastName,
             email,
             password: hashedPassword,
             image: "",

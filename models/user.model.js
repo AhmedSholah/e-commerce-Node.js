@@ -1,10 +1,73 @@
 const mongoose = require("mongoose");
 
+const egyptianCities = [
+    "Cairo",
+    "Alexandria",
+    "Giza",
+    "Shubra El-Kheima",
+    "Port Said",
+    "Suez",
+    "Mansoura",
+    "Tanta",
+    "Asyut",
+    "Ismailia",
+    "Fayoum",
+    "Zagazig",
+    "Minya",
+    "Damietta",
+    "Beni Suef",
+    "Luxor",
+    "Aswan",
+    "6th of October City",
+    "Damanhur",
+    "Shibin El Kom",
+    "Hurghada",
+    "Banha",
+    "Minya al-Qamh",
+    "Kafr El Sheikh",
+    "Qena",
+    "Sohag",
+    "Mahalla",
+    "Mersa Matruh",
+    "Rashid",
+    "Edfu",
+    "Kafr El Dawar",
+    "El-Mahalla El-Kubra",
+    "Beni Suef",
+    "Tanta",
+    "Gharbia",
+    "Qalyubia",
+];
+
 const userSchema = new mongoose.Schema({
-    username: {
+    firstName: {
         type: String,
         required: true,
-        minlength: [3, "Username must be at least 3 characters long"],
+        minlength: [3, "First Name must be at least 3 characters long"],
+        maxlength: [3, "last Name must be at most 16 characters long"],
+    },
+    lastName: {
+        type: String,
+        required: true,
+        minlength: [3, "last Name must be at least 3 characters long"],
+        maxlength: [3, "last Name must be at most 16 characters long"],
+    },
+    phoneNumber: {
+        type: String,
+        minlength: [11, "Phone number must be 11 characters long"],
+        maxlength: [11, "Phone number must be 11 characters long"],
+    },
+    country: {
+        type: String,
+        enum: ["Egypt"],
+    },
+    city: {
+        type: String,
+        enum: egyptianCities,
+    },
+    bio: {
+        type: String,
+        minlength: [3, "bio must be at least 3 characters long"],
     },
     email: {
         type: String,
@@ -44,6 +107,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["client", "seller", "admin"],
         default: "client",
+        required: true,
     },
     wallet: {
         type: Number,

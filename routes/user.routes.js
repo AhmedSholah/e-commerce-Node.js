@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const checkRole = require("../middlewares/checkRole");
+const validateSchema = require("../middlewares/validateSchema");
+const userValidation = require("../utils/validation/userValidation");
 
 const {
     getAllUsers,
@@ -13,7 +15,11 @@ const {
 router
     .route("/")
     .get(isAuthenticated, checkRole(["admin"]), getAllUsers)
-    .patch(isAuthenticated, updateUser);
+    .patch(
+        isAuthenticated,
+        validateSchema(userValidation.updateUserSchema),
+        updateUser
+    );
 
 // For Admin Use
 // router
