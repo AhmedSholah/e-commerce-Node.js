@@ -64,14 +64,12 @@ const getProductsSchema = z.object({
         .transform((val) => (typeof val === "string" ? [val] : val))
         .optional(),
     instock: z
-        .string()
-        .refine((val) => val === "true" || val === "false")
+        .enum(["true", "false"])
         .transform((val) => val === "true")
         .optional(),
-    sortBy: z.enum(["name", "price", "createdAt"]).default("name").optional(),
+    sortBy: z.enum(["name", "price", "createdAt"]).default("name"),
     sortOrder: z
-        .string()
-        .refine((val) => val === "asc" || val === "desc")
+        .enum(["asc", "desc"])
         .default("asc")
         .transform((val) => (val === "asc" ? 1 : -1)),
 });

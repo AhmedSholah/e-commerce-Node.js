@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const FavoriteModel = require("./favorite.model");
 
 const productSchema = new mongoose.Schema(
     {
@@ -97,4 +98,6 @@ productSchema.virtual("priceAfterDiscount").get(function () {
     return Math.max(calculatedPrice, 0);
 });
 
-module.exports = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema);
+
+module.exports = Product;

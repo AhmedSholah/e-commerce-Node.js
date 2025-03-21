@@ -27,7 +27,19 @@ const cartSchema = new mongoose.Schema(
             // default: [],
         },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
+    }
 );
 
-module.exports = mongoose.model("Cart", cartSchema);
+cartSchema.virtual("totalPrice").get(function () {
+    return this.items.reduce((total, item) => {
+        return total + item.quantity * item.product.priceAfterDiscount;
+    }, 0);
+});
+
+const Cart = mongoose.model("Cart", cartSchema);
+
+module.exports = Cart;

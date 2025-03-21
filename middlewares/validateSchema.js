@@ -2,24 +2,25 @@ const AppError = require("../utils/AppError");
 const httpStatusText = require("../utils/httpStatusText");
 
 function validateSchema(schema, validationTarget = "body") {
-    let validationData;
+    let result;
     return (req, res, next) => {
         switch (validationTarget) {
             case "body":
-                validationData = req.body;
+                result = schema.safeParse(req.body);
+                req.body = result.data;
                 break;
             case "query":
-                validationData = req.query;
+                result = schema.safeParse(req.query);
+                req.query = result.data;
                 break;
             case "params":
-                validationData = req.params;
+                result = schema.safeParse(req.params);
                 break;
 
             default:
-                validationData = req.body;
+                result = schema.safeParse(req.body);
                 break;
         }
-        const result = schema.safeParse(validationData);
 
         if (!result.success) {
             return next(

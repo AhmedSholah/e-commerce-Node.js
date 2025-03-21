@@ -22,8 +22,8 @@ const getProducts = asyncWrapper(async (req, res, next) => {
         filter.category = { $in: query.category };
     }
 
-    if (query.instock) {
-        if (query.instock === "true") {
+    if (query.instock !== undefined) {
+        if (query.instock) {
             filter.quantity = { $gt: 0 };
         } else {
             filter.quantity = { $eq: 0 };
@@ -31,11 +31,11 @@ const getProducts = asyncWrapper(async (req, res, next) => {
     }
 
     const products = await ProductModel.find(filter, { __v: false })
-        .populate({ path: "soldBy", select: "_id username" })
+        .populate({ path: "soldBy", select: "_id firstName" })
         .sort({ [query.sortBy]: query.sortOrder })
         .skip(skip)
-        .limit(limit)
-        .lean();
+        .limit(limit);
+    // .lean({ virtuals: true });
 
     if (!products) {
         return next(
@@ -48,10 +48,7 @@ const getProducts = asyncWrapper(async (req, res, next) => {
 const getOneProduct = asyncWrapper(async (req, res, next) => {
     const product = await ProductModel.findById(req.params.productId, {
         __v: false,
-    }).populate({
-        path: "soldBy",
-        select: "_id username",
-    });
+    }).populate({ path: "soldBy", select: "_id firstName" });
 
     if (!product) {
         return next(

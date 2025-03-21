@@ -67,7 +67,7 @@ const userSchema = new mongoose.Schema({
     },
     bio: {
         type: String,
-        minlength: [3, "bio must be at least 3 characters long"],
+        // minlength: [3, "bio must be at least 3 characters long"],
     },
     email: {
         type: String,
@@ -115,4 +115,6 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

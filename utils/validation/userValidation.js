@@ -46,12 +46,10 @@ const updateUserSchema = z
         phoneNumber: z.string().length(11).optional(),
         country: z.enum(["Egypt"]).optional(),
         city: z.enum(egyptianCities).optional(),
-        bio: z.string().min(3).max(200).optional(),
+        bio: z.string().max(200).optional().or(z.literal("")),
         email: z.string().email().optional(),
         image: z.string().optional(),
     })
     .strict();
-
-module.exports = updateUserSchema;
 
 module.exports = { updateUserSchema };
