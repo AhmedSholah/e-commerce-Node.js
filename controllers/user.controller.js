@@ -54,8 +54,9 @@ const updateUser = asyncWrapper(async (req, res, next) => {
     const body = req.body;
 
     const isEmailRegistered = await UserModel.findOne({ email: body.email });
+    const user = await UserModel.findById(userId, { email: true });
 
-    if (isEmailRegistered) {
+    if (isEmailRegistered && !(user.email === body.email)) {
         return next(
             AppError.create("Email Already Exist", 404, httpStatusText.FAIL)
         );
