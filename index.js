@@ -20,6 +20,7 @@ const storageRoutes = require("./routes/storage.routes");
 app.use(express.json());
 app.use(cors());
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/products", productsRoutes);
@@ -29,6 +30,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/storage", storageRoutes);
 
+// Not Found
 app.use("*", (req, res, next) => {
     res.status(404).json({
         status: httpStatusText.ERROR,
@@ -37,6 +39,7 @@ app.use("*", (req, res, next) => {
     });
 });
 
+// Error Handling
 app.use((err, req, res, next) => {
     res.status(err.statusCode || 500).json({
         status: err.statusText || httpStatusText.ERROR,
