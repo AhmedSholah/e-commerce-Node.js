@@ -20,7 +20,7 @@ const storageRoutes = require("./routes/storage.routes");
 app.use(express.json());
 app.use(cors());
 
-// Routes
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/products", productsRoutes);

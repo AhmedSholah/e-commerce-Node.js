@@ -117,12 +117,12 @@ const createOrder = asyncWrapper(async (req, res, next) => {
 
     console.log(session.url);
 
-    // res.redirect(session.url);
+    res.redirect(session.url);
 
-    return res.status(201).json({
-        status: httpStatusText.SUCCESS,
-        data: order,
-    });
+    // return res.status(201).json({
+    //     status: httpStatusText.SUCCESS,
+    //     data: order,
+    // });
 });
 
 const updateOrderStatus = asyncWrapper(async (req, res, next) => {

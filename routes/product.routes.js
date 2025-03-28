@@ -19,7 +19,7 @@ router
     .post(
         isAuthenticated,
         checkRole(["seller", "admin"]),
-        validateSchema(addProductSchema),
+        // validateSchema(addProductSchema),
         productsController.addOneProduct
     );
 

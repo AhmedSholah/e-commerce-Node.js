@@ -9,11 +9,12 @@ const queryParamsNumberSchema = z
 const addProductSchema = z
     .object({
         name: z.string().min(3),
-        image: z.array().optional(),
+        images: z.array().optional(),
         price: z.number().min(0),
         discountAmount: z.number().min(0).optional(),
         discountPercentage: z.number().min(0).max(100).optional(),
         category: objectIdSchema,
+        // description: z.string().min(100).max(500),
         description: z.string().min(100).max(500),
         quantity: z.number().min(0),
         weight: z.number().min(0),
