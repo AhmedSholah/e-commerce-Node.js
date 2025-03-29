@@ -113,6 +113,11 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         billing_address_collection: "auto",
         success_url: `https://www.google.com/`,
         cancel_url: `https://www.google.com/`,
+
+        metadata: {
+            orderId: order._id.toString(),
+            userId: userId.toString(),
+        },
     });
 
     console.log(session.url);

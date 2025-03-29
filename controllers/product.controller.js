@@ -1,5 +1,6 @@
 const asyncWrapper = require("../middlewares/asyncWrapper");
 const ProductModel = require("../models/product.model");
+const CategoryModel = require("../models/category.model");
 const httpStatusText = require("../utils/httpStatusText");
 const AppError = require("../utils/AppError");
 const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
@@ -88,7 +89,17 @@ const addOneProduct = asyncWrapper(async (req, res, next) => {
     const product = req.body;
     product.soldBy = req.tokenPayload.userId;
 
+    // check if category exists or not
+    const categoryExists = await CategoryModel.findById(product.category);
+
+    if (!categoryExists) {
+        return next(
+            AppError.create("Category Not Found", 404, httpStatusText.FAIL)
+        );
+    }
+
     await ProductModel.create(product);
+
     return res.json({
         status: httpStatusText.SUCCESS,
         data: { message: "Product created successfully." },
