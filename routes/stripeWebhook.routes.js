@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const Order = require("../models/order.model"); // Make sure to import your Order model
 
-// Use express.raw() middleware for the webhook route
 router.post(
     "/",
     express.raw({ type: "application/json" }),
@@ -22,28 +22,25 @@ router.post(
             return res.status(400).json({ error: err.message });
         }
 
-        // Handle the checkout.session.completed event
         if (event.type === "checkout.session.completed") {
             const session = event.data.object;
 
-            console.log(session);
-
             try {
-                // Update your order status in database
-                // Access session.metadata for any custom data you passed
-                // Example: const orderId = session.metadata.orderId;
+                const orderId = session.metadata.orderId;
 
-                // Add your order fulfillment logic here
+                await Order.findByIdAndUpdate(orderId, {
+                    paymentStatus: "paid",
+                });
 
                 return res.json({ received: true });
             } catch (err) {
+                console.error("Error updating order:", err);
                 return res
                     .status(500)
                     .json({ error: "Failed to process order" });
             }
         }
 
-        // Return 200 for unhandled events
         res.json({ received: true });
     }
 );
