@@ -19,6 +19,10 @@ const productSchema = new mongoose.Schema(
             min: 0,
             max: 5,
         },
+        image: {
+            type: String,
+            // required: true,
+        },
         images: [
             {
                 type: String,
@@ -98,6 +102,12 @@ productSchema.virtual("priceAfterDiscount").get(function () {
         this.price * (this.discountPercentage / 100);
 
     return Math.max(calculatedPrice, 0);
+});
+
+productSchema.virtual("imageUrl").get(function () {
+    return this.image
+        ? process.env.AWS_S3_PUBLIC_BUCKET_URL + this.image
+        : null;
 });
 
 const Product = mongoose.model("Product", productSchema);

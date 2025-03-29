@@ -10,6 +10,11 @@ const {
     deleteProductSchema,
 } = require("../utils/validation/productValidation");
 
+const multer = require("multer");
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 router
     .route("/")
     .get(
@@ -36,6 +41,7 @@ router
         isAuthenticated,
         checkRole(["seller", "admin"]),
         validateSchema(updateProductSchema),
+        upload.single("file"),
         productsController.updateProductImage
     )
     .delete(

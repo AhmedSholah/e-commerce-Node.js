@@ -39,12 +39,34 @@ const getProducts = asyncWrapper(async (req, res, next) => {
         .limit(limit);
     // .lean({ virtuals: true });
 
+    // get total number of products for pagination
+    const productsCount = await ProductModel.countDocuments(filter);
+
+    // get highest priced product
+    const highestPricedProduct = await ProductModel.findOne(filter)
+        .sort({ price: -1 })
+        .select("price");
+
+    // Return 4 products Randomly until fix it soon with best products according to views
+    const bestSellingProducts = await ProductModel.aggregate([
+        { $sample: { size: 4 } },
+    ]);
+
     if (!products) {
         return next(
             AppError.create("Product Not Found", 404, httpStatusText.FAIL)
         );
     }
-    return res.json({ status: httpStatusText.SUCCESS, data: { products } });
+
+    return res.json({
+        status: httpStatusText.SUCCESS,
+        data: {
+            productsCount,
+            products,
+            bestSellingProducts,
+            highestPricedProduct,
+        },
+    });
 });
 
 const getOneProduct = asyncWrapper(async (req, res, next) => {
@@ -158,7 +180,7 @@ const updateProductImage = asyncWrapper(async (req, res, next) => {
         } catch (error) {}
     }
 
-    const newImagePath = `products/${userId}/image-${Date.now()}.${
+    const newImagePath = `products/${productId}/image-${Date.now()}.${
         req.file.mimetype.split("/")[1]
     }`;
 
@@ -188,8 +210,7 @@ const updateProductImage = asyncWrapper(async (req, res, next) => {
     await res.status(200).json({
         status: httpStatusText.SUCCESS,
         data: {
-            avatar: `${process.env.AWS_S3_PUBLIC_BUCKET_URL}${newImagePath}`,
-            product,
+            image: `${process.env.AWS_S3_PUBLIC_BUCKET_URL}${newImagePath}`,
         },
     });
 });
