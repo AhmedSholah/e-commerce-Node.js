@@ -18,8 +18,11 @@ const storageRoutes = require("./routes/storage.routes");
 const stripeWebhookRoutes = require("./routes/stripeWebhook.routes");
 
 // Middleware
-app.use(express.json());
 app.use(cors());
+
+app.use("/api/webhook/stripe", stripeWebhookRoutes);
+
+app.use(express.json());
 
 // API routes
 app.use("/api/auth", authRoutes);
@@ -30,7 +33,6 @@ app.use("/api/favorite", favoriteRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/storage", storageRoutes);
-app.use("/api/webhook/stripe", stripeWebhookRoutes);
 
 // Not Found
 app.use("*", (req, res, next) => {
