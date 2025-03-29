@@ -37,18 +37,21 @@ router
         validateSchema(updateProductSchema),
         productsController.updateOneProduct
     )
+    .delete(
+        isAuthenticated,
+        checkRole(["seller", "admin"]),
+        validateSchema(deleteProductSchema, "params"),
+        productsController.deleteOneProduct
+    );
+
+router
+    .route("/:productId/image")
     .put(
         isAuthenticated,
         checkRole(["seller", "admin"]),
         validateSchema(updateProductSchema),
         upload.single("file"),
         productsController.updateProductImage
-    )
-    .delete(
-        isAuthenticated,
-        checkRole(["seller", "admin"]),
-        validateSchema(deleteProductSchema, "params"),
-        productsController.deleteOneProduct
     );
 
 module.exports = router;
