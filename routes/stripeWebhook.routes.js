@@ -32,6 +32,7 @@ router.post(
                     paymentStatus: "paid",
                 });
 
+                console.log("Order updated successfully:", orderId);
                 return res.json({ received: true });
             } catch (err) {
                 console.error("Error updating order:", err);
