@@ -32,6 +32,12 @@ router
         validateSchema(updateProductSchema),
         productsController.updateOneProduct
     )
+    .put(
+        isAuthenticated,
+        checkRole(["seller", "admin"]),
+        validateSchema(updateProductSchema),
+        productsController.updateProductImage
+    )
     .delete(
         isAuthenticated,
         checkRole(["seller", "admin"]),

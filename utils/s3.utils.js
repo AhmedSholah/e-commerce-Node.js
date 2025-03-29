@@ -36,14 +36,15 @@ async function getDownloadUrl(fileName, isPrivate = false) {
     }
 }
 
-async function getUploadUrl(fileName, fileType, isPrivate = false) {
+async function getUploadUrl(fileName, fileType, buffer, isPrivate = false) {
     const bucketName = isPrivate
         ? process.env.AWS_S3_PRIVATE_BUCKET_NAME
         : process.env.AWS_S3_PUBLIC_BUCKET_NAME;
 
     const command = new PutObjectCommand({
         Bucket: bucketName,
-        Key: fileName,
+        Key: `${fileName} ${fileType}`,
+        Body: buffer,
         ContentType: fileType,
     });
 
@@ -57,4 +58,4 @@ async function getUploadUrl(fileName, fileType, isPrivate = false) {
     }
 }
 
-module.exports = { getUploadUrl, getDownloadUrl };
+module.exports = { getUploadUrl, getDownloadUrl, s3Client };

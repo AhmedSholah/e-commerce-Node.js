@@ -126,6 +126,35 @@ const deleteOneProduct = asyncWrapper(async (req, res, next) => {
     });
 });
 
+const updateProductImage = asyncWrapper(async (req, res, next) => {
+    const { productId } = req.params;
+    const { userId, role } = req.tokenPayload;
+
+    const product = await ProductModel.findById(productId);
+
+    if (!product) {
+        return next(
+            AppError.create("Product not found", 404, httpStatusText.FAIL)
+        );
+    }
+
+    const isAdmin = role === "admin";
+    const isOwner = product.soldBy.toString() === userId.toString();
+
+    if (!isAdmin && !isOwner) {
+        return next(AppError.create("Unauthorized", 401, httpStatusText.FAIL));
+    }
+
+    await ProductModel.findByIdAndUpdate(productId, {
+        $set: { image: req.file.path },
+    });
+
+    return res.status(200).json({
+        status: httpStatusText.SUCCESS,
+        data: null,
+    });
+}
+
 module.exports = {
     getProducts,
     getOneProduct,

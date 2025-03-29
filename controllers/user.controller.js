@@ -1,7 +1,9 @@
+const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const asyncWrapper = require("../middlewares/asyncWrapper");
 const UserModel = require("../models/user.model");
 const AppError = require("../utils/AppError");
 const httpStatusText = require("../utils/httpStatusText");
+const { s3Client } = require("../utils/s3.utils");
 
 const getAllUsers = asyncWrapper(async (req, res, next) => {
     const users = await UserModel.find({}, { __v: false, password: false });
@@ -94,10 +96,69 @@ const deleteUser = asyncWrapper(async (req, res, next) => {
     return res.status(200).json({ status: httpStatusText.SUCCESS, data: null });
 });
 
+const updateAvatar = asyncWrapper(async (req, res, next) => {
+    const { userId } = req.tokenPayload;
+
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+        return next(
+            AppError.create("User Not Found", 404, httpStatusText.FAIL)
+        );
+    }
+
+    const deleteCommand = new DeleteObjectCommand({
+        Bucket: "main",
+        Key: user.avatar,
+    });
+
+    if (user.avatar) {
+        try {
+            await s3Client.send(deleteCommand);
+        } catch (error) {}
+    }
+
+    const newAvatarPath = `users/${userId}/avatar-${Date.now()}.${
+        req.file.mimetype.split("/")[1]
+    }`;
+
+    const params = {
+        Bucket: "main",
+        Key: newAvatarPath,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+    };
+
+    const command = new PutObjectCommand(params);
+
+    try {
+        await s3Client.send(command);
+        user.avatar = newAvatarPath;
+        await user.save();
+    } catch (error) {
+        return next(
+            AppError.create(
+                "Error uploading new avatar",
+                500,
+                httpStatusText.FAIL
+            )
+        );
+    }
+
+    await res.status(200).json({
+        status: httpStatusText.SUCCESS,
+        data: {
+            avatar: `${process.env.AWS_S3_PUBLIC_BUCKET_URL}${newAvatarPath}`,
+            user,
+        },
+    });
+});
+
 module.exports = {
     getAllUsers,
     getUser,
     updateUser,
     deleteUser,
     getCurrentUser,
+    updateAvatar,
 };
