@@ -1,10 +1,11 @@
-const router = require("express").Router();
 const express = require("express");
+const router = express.Router();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-router
-    .route("/")
-    .post(express.raw({ type: "application/json" }), async (req, res) => {
-        const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+router.post(
+    "/",
+    express.raw({ type: "application/json" }),
+    async (req, res) => {
         const sig = req.headers["stripe-signature"];
         let event;
 
@@ -16,28 +17,33 @@ router
             );
         } catch (err) {
             console.log(
-                `⚠️  Webhook signature verification failed.`,
+                "⚠️  Webhook signature verification failed:",
                 err.message
             );
             return res.status(400).send(`Webhook Error: ${err.message}`);
         }
 
-        // Handle the event
+        // ✅ Handle Stripe events
         switch (event.type) {
             case "payment_intent.succeeded":
                 const paymentIntent = event.data.object;
-                console.log("PaymentIntent was successful!");
+                console.log(
+                    "✅ PaymentIntent was successful!",
+                    paymentIntent.id
+                );
                 break;
+
             case "payment_method.attached":
                 const paymentMethod = event.data.object;
-                console.log("PaymentMethod was attached to a Customer!");
+                console.log("✅ PaymentMethod attached:", paymentMethod.id);
                 break;
+
             default:
-                console.log(`Unhandled event type ${event.type}`);
+                console.log(`ℹ️ Unhandled event type: ${event.type}`);
         }
 
-        // Return a 200 response to acknowledge receipt of the event
-        res.json({ received: true });
-    });
+        res.status(200).json({ received: true });
+    }
+);
 
 module.exports = router;
