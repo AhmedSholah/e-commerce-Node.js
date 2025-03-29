@@ -1,9 +1,9 @@
 const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const { s3Client } = require("../utils/s3.utils");
 const asyncWrapper = require("../middlewares/asyncWrapper");
 const UserModel = require("../models/user.model");
 const AppError = require("../utils/AppError");
 const httpStatusText = require("../utils/httpStatusText");
-const { s3Client } = require("../utils/s3.utils");
 
 const getAllUsers = asyncWrapper(async (req, res, next) => {
     const users = await UserModel.find({}, { __v: false, password: false });

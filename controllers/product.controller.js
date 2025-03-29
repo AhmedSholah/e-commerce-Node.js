@@ -2,6 +2,8 @@ const asyncWrapper = require("../middlewares/asyncWrapper");
 const ProductModel = require("../models/product.model");
 const httpStatusText = require("../utils/httpStatusText");
 const AppError = require("../utils/AppError");
+const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const { s3Client } = require("../utils/s3.utils");
 
 const getProducts = asyncWrapper(async (req, res, next) => {
     const query = req.query;
@@ -145,15 +147,52 @@ const updateProductImage = asyncWrapper(async (req, res, next) => {
         return next(AppError.create("Unauthorized", 401, httpStatusText.FAIL));
     }
 
-    await ProductModel.findByIdAndUpdate(productId, {
-        $set: { image: req.file.path },
+    const deleteCommand = new DeleteObjectCommand({
+        Bucket: "main",
+        Key: product.image,
     });
 
-    return res.status(200).json({
+    if (product.image) {
+        try {
+            await s3Client.send(deleteCommand);
+        } catch (error) {}
+    }
+
+    const newImagePath = `products/${userId}/image-${Date.now()}.${
+        req.file.mimetype.split("/")[1]
+    }`;
+
+    const params = {
+        Bucket: "main",
+        Key: newImagePath,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+    };
+
+    const command = new PutObjectCommand(params);
+
+    try {
+        await s3Client.send(command);
+        product.image = newImagePath;
+        await product.save();
+    } catch (error) {
+        return next(
+            AppError.create(
+                "Error uploading new image",
+                500,
+                httpStatusText.FAIL
+            )
+        );
+    }
+
+    await res.status(200).json({
         status: httpStatusText.SUCCESS,
-        data: null,
+        data: {
+            avatar: `${process.env.AWS_S3_PUBLIC_BUCKET_URL}${newImagePath}`,
+            product,
+        },
     });
-}
+});
 
 module.exports = {
     getProducts,
@@ -161,4 +200,5 @@ module.exports = {
     addOneProduct,
     updateOneProduct,
     deleteOneProduct,
+    updateProductImage,
 };
