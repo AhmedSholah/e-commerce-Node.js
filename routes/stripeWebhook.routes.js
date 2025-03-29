@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const Order = require("../models/order.model"); // Make sure to import your Order model
+const Order = require("../models/order.model");
 
 router.post(
     "/",
