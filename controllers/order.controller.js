@@ -41,7 +41,7 @@ const createOrder = asyncWrapper(async (req, res, next) => {
     if (!cart.items || cart.items.length == 0) {
         return next(AppError.create("Cart Is Empty"));
     }
-    let totalPrice = 0;
+
     let orderItems = [];
 
     for (let item of cart.items) {
@@ -65,7 +65,7 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         orderItems: orderItems,
         shippingAddress,
         paymentMethod,
-        totalPrice,
+        totalPrice: cart.totalPrice,
         status: "Pending",
     });
 

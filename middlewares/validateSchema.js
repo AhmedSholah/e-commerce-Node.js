@@ -22,8 +22,6 @@ function validateSchema(schema, validationTarget = "body") {
                 break;
         }
 
-        console.log(result.error);
-
         if (!result.success) {
             return next(
                 AppError.create(

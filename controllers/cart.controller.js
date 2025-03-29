@@ -114,15 +114,11 @@ const removeCartItem = asyncWrapper(async (req, res, next) => {
         (item) => item.product.toString() !== productId
     );
 
-    console.log(cart.items);
-
     await cart.save();
 
     const updatedCart = await CartModel.findOne({ user: userId }).populate(
         "items.product"
     );
-
-    console.log(updatedCart);
 
     return res
         .status(200)
