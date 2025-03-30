@@ -38,7 +38,6 @@ const getProducts = asyncWrapper(async (req, res, next) => {
         .sort({ [query.sortBy]: query.sortOrder })
         .skip(skip)
         .limit(limit);
-    // .lean({ virtuals: true });
 
     // get total number of products for pagination
     const productsCount = await ProductModel.countDocuments(filter);
@@ -49,9 +48,13 @@ const getProducts = asyncWrapper(async (req, res, next) => {
         .select("price");
 
     // Return 4 products Randomly until fix it soon with best products according to views
-    const bestSellingProducts = await ProductModel.aggregate([
-        { $sample: { size: 4 } },
-    ]);
+    const total = await ProductModel.countDocuments();
+    const randomSkip = Math.max(0, Math.floor(Math.random() * (total - 4)));
+
+    const bestSellingProducts = await ProductModel.find({}, { __v: 0 })
+        .skip(randomSkip)
+        .limit(4)
+        .populate("soldBy", "_id firstName");
 
     if (!products) {
         return next(

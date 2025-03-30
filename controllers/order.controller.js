@@ -51,7 +51,7 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         //     return next(AppError.create(`${product.name} is out of stock`));
         // }
 
-        product.quantity -= item.quantity;
+        // product.quantity -= item.quantity;
         await product.save();
         orderItems.push({
             product: product,
