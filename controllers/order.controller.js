@@ -70,8 +70,8 @@ const createOrder = asyncWrapper(async (req, res, next) => {
     });
 
     await order.save();
-    cart.items = [];
-    await cart.save();
+    // cart.items = [];
+    // await cart.save();
 
     const sessionItems = [];
 
