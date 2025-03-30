@@ -111,8 +111,8 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         ],
 
         billing_address_collection: "auto",
-        success_url: `https://www.google.com/`,
-        cancel_url: `https://www.google.com/`,
+        success_url: `http://localhost:4200/checkout-confirmation`,
+        cancel_url: `http://localhost:4200/checkout-confirmation`,
 
         metadata: {
             orderId: order._id.toString(),
