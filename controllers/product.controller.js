@@ -43,7 +43,7 @@ const getProducts = asyncWrapper(async (req, res, next) => {
     const productsCount = await ProductModel.countDocuments(filter);
 
     // get highest priced product
-    const highestPricedProduct = await ProductModel.findOne(filter)
+    const highestPricedProduct = await ProductModel.findOne()
         .sort({ price: -1 })
         .select("price");
 
