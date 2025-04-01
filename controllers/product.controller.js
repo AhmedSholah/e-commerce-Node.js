@@ -166,7 +166,7 @@ const deleteOneProduct = asyncWrapper(async (req, res, next) => {
     });
 });
 
-const updateProductImage = asyncWrapper(async (req, res, next) => {
+const addProductImage = asyncWrapper(async (req, res, next) => {
     const { productId } = req.params;
     const { userId, role } = req.tokenPayload;
 
@@ -185,16 +185,16 @@ const updateProductImage = asyncWrapper(async (req, res, next) => {
         return next(AppError.create("Unauthorized", 401, httpStatusText.FAIL));
     }
 
-    const deleteCommand = new DeleteObjectCommand({
-        Bucket: "main",
-        Key: product.image,
-    });
+    // const deleteCommand = new DeleteObjectCommand({
+    //     Bucket: "main",
+    //     Key: product.image,
+    // });
 
-    if (product.image) {
-        try {
-            await s3Client.send(deleteCommand);
-        } catch (error) {}
-    }
+    // if (product.image) {
+    //     try {
+    //         await s3Client.send(deleteCommand);
+    //     } catch (error) {}
+    // }
 
     const newImagePath = `products/${productId}/image-${Date.now()}.${
         req.file.mimetype.split("/")[1]
@@ -211,7 +211,7 @@ const updateProductImage = asyncWrapper(async (req, res, next) => {
 
     try {
         await s3Client.send(command);
-        product.image = newImagePath;
+        product.imageNames.push(newImagePath);
         await product.save();
     } catch (error) {
         return next(
@@ -231,11 +231,58 @@ const updateProductImage = asyncWrapper(async (req, res, next) => {
     });
 });
 
+const deleteProductImage = asyncWrapper(async (req, res, next) => {
+    const { productId, imageIndex } = req.params;
+    const { userId, role } = req.tokenPayload;
+
+    const product = await ProductModel.findById(productId);
+
+    if (!product) {
+        return next(
+            AppError.create("Product not found", 404, httpStatusText.FAIL)
+        );
+    }
+
+    const isAdmin = role === "admin";
+    const isOwner = product.soldBy.toString() === userId.toString();
+
+    if (!isAdmin && !isOwner) {
+        return next(AppError.create("Unauthorized", 401, httpStatusText.FAIL));
+    }
+
+    const imageToDelete = product.imageNames[imageIndex];
+
+    if (!imageToDelete) {
+        return next(
+            AppError.create("Image not found", 404, httpStatusText.FAIL)
+        );
+    }
+    const deleteCommand = new DeleteObjectCommand({
+        Bucket: "main",
+        Key: imageToDelete,
+    });
+    try {
+        await s3Client.send(deleteCommand);
+        product.imageNames.splice(imageIndex, 1);
+        await product.save();
+    } catch (error) {
+        return next(
+            AppError.create("Error deleting image", 500, httpStatusText.FAIL)
+        );
+    }
+
+    return res.status(200).json({
+        status: httpStatusText.SUCCESS,
+        data: null,
+    });
+});
+
 module.exports = {
     getProducts,
     getOneProduct,
     addOneProduct,
     updateOneProduct,
     deleteOneProduct,
-    updateProductImage,
+    addProductImage,
+    deleteProductImage,
 };

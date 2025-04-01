@@ -4,10 +4,9 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const checkRole = require("../middlewares/checkRole");
 const validateSchema = require("../middlewares/validateSchema");
 const {
-    addProductSchema,
-    updateProductSchema,
     getProductsSchema,
     deleteProductSchema,
+    updateProductSchema,
 } = require("../utils/validation/productValidation");
 const hasToken = require("../middlewares/hasToken");
 
@@ -53,7 +52,17 @@ router
         checkRole(["seller", "admin"]),
         validateSchema(updateProductSchema),
         upload.single("file"),
-        productsController.updateProductImage
+        productsController.addProductImage
+    );
+
+router
+    .route("/:productId/image/:imageIndex")
+    .delete(
+        isAuthenticated,
+        checkRole(["seller", "admin"]),
+        validateSchema(updateProductSchema),
+        upload.single("file"),
+        productsController.deleteProductImage
     );
 
 module.exports = router;
