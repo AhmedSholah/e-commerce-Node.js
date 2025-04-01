@@ -103,11 +103,11 @@ const addOneProduct = asyncWrapper(async (req, res, next) => {
         );
     }
 
-    await ProductModel.create(product);
+    const proudct = await ProductModel.create(product);
 
     return res.json({
         status: httpStatusText.SUCCESS,
-        data: { message: "Product created successfully." },
+        data: { message: "Product created successfully.", id: proudct._id },
     });
 });
 
