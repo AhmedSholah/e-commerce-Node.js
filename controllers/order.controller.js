@@ -60,6 +60,10 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         });
     }
 
+    const latestOrder = await OrderModel.findOne()
+        .sort({ createdAt: -1 })
+        .limit(1);
+
     const order = new OrderModel({
         user: userId,
         orderItems: orderItems,
@@ -67,6 +71,7 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         paymentMethod,
         totalPrice: cart.totalPrice,
         status: "Pending",
+        orderNumber: latestOrder.orderNumber + 1,
     });
 
     await order.save();

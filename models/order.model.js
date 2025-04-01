@@ -47,6 +47,10 @@ const orderSchema = new mongoose.Schema(
             enum: ["processing", "shipped", "delivered", "cancelled"],
             default: "processing",
         },
+        orderNumber: {
+            type: Number,
+            default: 0,
+        },
         deliveredAt: Date,
     },
     { timestamps: true }
