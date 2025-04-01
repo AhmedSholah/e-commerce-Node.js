@@ -12,14 +12,11 @@ router
     .route("/admin")
     .get(isAuthenticated, checkRole(["admin"]), orderController.getAllOrders);
 
-router
-    .route("/:orderId")
-    .get(isAuthenticated, orderController.getOrder)
-    .patch(
-        isAuthenticated,
-        checkRole(["seller", "admin"]),
-        orderController.updateOrderStatus
-    );
+router.route("/:orderId").get(isAuthenticated, orderController.getOrder).patch(
+    isAuthenticated,
+    // checkRole(["", "seller", "admin"]),
+    orderController.updateOrderStatus
+);
 // .delete(isAuthenticated, deleteOrder);
 
 module.exports = router;
