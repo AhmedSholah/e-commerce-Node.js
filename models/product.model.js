@@ -101,6 +101,9 @@ productSchema.virtual("priceAfterDiscount").get(function () {
 });
 
 productSchema.virtual("images").get(function () {
+    if (!this.imageNames || this.imageNames.length === 0) {
+        return [];
+    }
     return this.imageNames.map(
         (imageName) => `${process.env.AWS_S3_PUBLIC_BUCKET_URL}${imageName}`
     );
