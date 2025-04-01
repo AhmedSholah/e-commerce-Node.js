@@ -31,11 +31,13 @@ router
         categoryController.deletCategory
     );
 
-router.route("/:categoryId/image").put(
-    isAuthenticated,
-    // checkRole(["admin"]),
-    upload.single("file"),
-    categoryController.updateCategoryImage
-);
+router
+    .route("/:categoryId/image")
+    .put(
+        isAuthenticated,
+        checkRole(["admin"]),
+        upload.single("file"),
+        categoryController.updateCategoryImage
+    );
 
 module.exports = router;
