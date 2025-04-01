@@ -9,6 +9,7 @@ const {
     getProductsSchema,
     deleteProductSchema,
 } = require("../utils/validation/productValidation");
+const hasToken = require("../middlewares/hasToken");
 
 const multer = require("multer");
 
@@ -18,6 +19,7 @@ const upload = multer({ storage: storage });
 router
     .route("/")
     .get(
+        hasToken,
         validateSchema(getProductsSchema, "query"),
         productsController.getProducts
     )

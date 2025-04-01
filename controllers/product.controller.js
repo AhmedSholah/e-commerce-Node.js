@@ -1,10 +1,12 @@
 const asyncWrapper = require("../middlewares/asyncWrapper");
 const ProductModel = require("../models/product.model");
 const CategoryModel = require("../models/category.model");
+const UserModel = require("../models/user.model");
 const httpStatusText = require("../utils/httpStatusText");
 const AppError = require("../utils/AppError");
 const { PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { s3Client } = require("../utils/s3.utils");
+const FavoriteModel = require("../models/favorite.model");
 
 const getProducts = asyncWrapper(async (req, res, next) => {
     const query = req.query;
