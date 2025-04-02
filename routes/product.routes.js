@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
 router
     .route("/")
     .get(
-        hasToken,
+        // hasToken,
         validateSchema(getProductsSchema, "query"),
         productsController.getProducts
     )
