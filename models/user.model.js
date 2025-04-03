@@ -44,14 +44,19 @@ const userSchema = new mongoose.Schema(
         firstName: {
             type: String,
             required: true,
-            minlength: [3, "First Name must be at least 3 characters long"],
+            minlength: [1, "First Name must be at least 3 characters long"],
             maxlength: [16, "last Name must be at most 16 characters long"],
         },
         lastName: {
             type: String,
             required: true,
-            minlength: [3, "last Name must be at least 3 characters long"],
+            minlength: [1, "last Name must be at least 3 characters long"],
             maxlength: [16, "last Name must be at most 16 characters long"],
+        },
+        provider: {
+            type: String,
+            enum: ["local", "google"],
+            default: "local",
         },
         phoneNumber: {
             type: String,
@@ -68,7 +73,7 @@ const userSchema = new mongoose.Schema(
         },
         bio: {
             type: String,
-            // minlength: [3, "bio must be at least 3 characters long"],
+            minlength: [3, "bio must be at least 3 characters long"],
         },
         email: {
             type: String,
@@ -78,7 +83,7 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
+            // required: true,
             minlength: [8, "Password must be at least 8 characters long"],
             maxlength: [256, "Password must be at most 256 characters long"],
             validate: {
@@ -97,12 +102,10 @@ const userSchema = new mongoose.Schema(
         },
         avatar: {
             type: String,
-            // required: true,
         },
         gender: {
             type: String,
             enum: ["male", "female"],
-            required: true,
         },
         role: {
             type: String,
@@ -123,8 +126,10 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.virtual("avatarUrl").get(function () {
-    if (this.avatar) {
+    if (this.avatar && this.provider === "local") {
         return process.env.AWS_S3_PUBLIC_BUCKET_URL + this.avatar;
+    } else if (this.avatar && this.provider === "google") {
+        return this.avatar;
     } else {
         return null;
     }
