@@ -8,6 +8,14 @@ const generateJWT = require("../utils/generateJWT");
 const CartModel = require("../models/cart.model");
 const FavoriteModel = require("../models/favorite.model");
 
+const { OAuth2Client } = require("google-auth-library");
+
+const client = new OAuth2Client(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URI
+);
+
 const register = asyncWrapper(async function (req, res, next) {
     // const session = await mongoose.startSession();
     // session.startTransaction();
@@ -96,4 +104,67 @@ const login = asyncWrapper(async (req, res, next) => {
         .json({ status: httpStatusText.SUCCESS, data: { token } });
 });
 
-module.exports = { register, login };
+const google = asyncWrapper(async (req, res, next) => {
+    const authUrl = client.generateAuthUrl({
+        access_type: "offline",
+        scope: ["profile", "email"],
+    });
+    res.redirect(authUrl);
+});
+
+const googleCallback = asyncWrapper(async (req, res, next) => {
+    const { code } = req.query;
+
+    try {
+        const { tokens } = await client.getToken(code);
+        client.setCredentials(tokens);
+
+        const userInfo = await client.request({
+            url: "https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos",
+        });
+
+        const userData = userInfo.data;
+        const email = userData.emailAddresses[0].value;
+        const name = userData.names[0].displayName;
+        const picture = userData.photos[0].url;
+
+        const foundUser = await UserModel.findOne({ email });
+
+        let token;
+        if (foundUser) {
+            const tokenPayload = {
+                userId: foundUser._id,
+                role: foundUser.role,
+            };
+
+            token = await generateJWT(tokenPayload);
+        } else {
+            const newUser = await UserModel.create({
+                firstName: name.split(" ")[0],
+                lastName: name.split(" ")[1],
+                email,
+                provider: "google",
+                avatar: picture,
+                role: "client",
+            });
+
+            const tokenPayload = {
+                id: newUser._id,
+                role: newUser.role,
+            };
+            token = await generateJWT(tokenPayload);
+        }
+
+        res.redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
+    } catch (error) {
+        console.error("Authentication failed:", error);
+        res.redirect(`${process.env.FRONTEND_URL}/login`);
+    }
+});
+
+module.exports = {
+    register,
+    login,
+    google,
+    googleCallback,
+};

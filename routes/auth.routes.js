@@ -1,5 +1,10 @@
 const router = require("express").Router();
-const { register, login } = require("../controllers/auth.controller");
+const {
+    register,
+    login,
+    google,
+    googleCallback,
+} = require("../controllers/auth.controller");
 const validateSchema = require("../middlewares/validateSchema");
 const {
     registerSchema,
@@ -8,5 +13,7 @@ const {
 
 router.route("/register").post(validateSchema(registerSchema), register);
 router.route("/login").post(validateSchema(loginSchema), login);
+router.route("/google").get(google);
+router.route("/google/callback").get(googleCallback);
 
 module.exports = router;
