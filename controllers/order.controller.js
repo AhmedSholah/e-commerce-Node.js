@@ -116,7 +116,7 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         // ],
 
         billing_address_collection: "auto",
-        success_url: `http://localhost:4200/checkout-confirmation`,
+        success_url: `https://e-commerce-angular-orcin.vercel.app/checkout-confirmation`,
         cancel_url: `http://localhost:4200/checkout-confirmation`,
 
         metadata: {
