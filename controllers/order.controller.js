@@ -96,24 +96,24 @@ const createOrder = asyncWrapper(async (req, res, next) => {
     const session = await stripe.checkout.sessions.create({
         line_items: sessionItems,
         mode: "payment",
-        shipping_address_collection: {
-            allowed_countries: ["EG", "SA"],
-        },
+        // shipping_address_collection: {
+        //     allowed_countries: ["EG", "SA"],
+        // },
         customer_email: user.email,
         // payment_method_types: ["card"],
-        shipping_options: [
-            {
-                shipping_rate_data: {
-                    type: "fixed_amount",
-                    fixed_amount: { amount: 2500, currency: "egp" },
-                    display_name: "Standard Shipping",
-                    delivery_estimate: {
-                        minimum: { unit: "business_day", value: 5 },
-                        maximum: { unit: "business_day", value: 7 },
-                    },
-                },
-            },
-        ],
+        // shipping_options: [
+        //     {
+        //         shipping_rate_data: {
+        //             type: "fixed_amount",
+        //             fixed_amount: { amount: 2500, currency: "egp" },
+        //             display_name: "Standard Shipping",
+        //             delivery_estimate: {
+        //                 minimum: { unit: "business_day", value: 5 },
+        //                 maximum: { unit: "business_day", value: 7 },
+        //             },
+        //         },
+        //     },
+        // ],
 
         billing_address_collection: "auto",
         success_url: `http://localhost:4200/checkout-confirmation`,
@@ -125,14 +125,11 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         },
     });
 
-    console.log(session.url);
+    // console.log(session.url);
 
-    res.redirect(session.url);
+    // res.redirect(session.url);
 
-    // return res.status(201).json({
-    //     status: httpStatusText.SUCCESS,
-    //     data: session.url,
-    // });
+    return res.status(201).json(session.url);
 });
 
 const updateOrderStatus = asyncWrapper(async (req, res, next) => {
