@@ -109,7 +109,7 @@ const google = asyncWrapper(async (req, res, next) => {
         access_type: "offline",
         scope: ["profile", "email"],
     });
-    res.redirect(authUrl);
+    res.status(200).json(authUrl);
 });
 
 const googleCallback = asyncWrapper(async (req, res, next) => {
