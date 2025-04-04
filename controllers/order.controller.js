@@ -125,8 +125,6 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         },
     });
 
-    // console.log(session.url);
-
     // res.redirect(session.url);
 
     return res.status(201).json(session.url);
