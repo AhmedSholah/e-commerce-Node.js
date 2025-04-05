@@ -116,16 +116,14 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         // ],
 
         billing_address_collection: "auto",
-        success_url: `https://craftopia-angular.vercel.app//checkout-confirmation`,
-        cancel_url: `http://localhost:4200/checkout-confirmation`,
+        success_url: `https://craftopia-angular.vercel.app/checkout-confirmation`,
+        cancel_url: `https://craftopia-angular.vercel.app`,
 
         metadata: {
             orderId: order._id.toString(),
             userId: userId.toString(),
         },
     });
-
-    // res.redirect(session.url);
 
     return res.status(201).json(session.url);
 });
