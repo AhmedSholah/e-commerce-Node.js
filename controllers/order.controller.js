@@ -71,7 +71,7 @@ const createOrder = asyncWrapper(async (req, res, next) => {
         paymentMethod,
         totalPrice: cart.totalPrice,
         status: "Pending",
-        orderNumber: latestOrder.orderNumber + 1,
+        orderId: latestOrder.orderId + 1 || 500,
     });
 
     await order.save();

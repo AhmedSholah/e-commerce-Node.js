@@ -47,7 +47,7 @@ const orderSchema = new mongoose.Schema(
             enum: ["processing", "shipped", "delivered", "cancelled"],
             default: "processing",
         },
-        orderNumber: {
+        orderId: {
             type: Number,
             default: 0,
         },
