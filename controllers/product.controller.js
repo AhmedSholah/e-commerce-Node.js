@@ -41,7 +41,7 @@ const getProducts = asyncWrapper(async (req, res, next) => {
             __v: false,
         }
     )
-        .populate({ path: "soldBy" })
+        .populate({ path: "soldBy", select: "_id firstName" })
         .sort({ [query.sortBy]: query.sortOrder })
         .skip(skip)
         .limit(limit);
