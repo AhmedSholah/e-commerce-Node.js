@@ -41,9 +41,9 @@ const getProducts = asyncWrapper(async (req, res, next) => {
         .populate({ path: "soldBy", select: "_id firstName" })
         .sort({ [query.sortBy]: query.sortOrder })
         .skip(skip)
-        .limit(limit)
-        .where("deleted")
-        .ne(true);
+        .limit(limit);
+    // .where("deleted")
+    // .ne(true);
 
     // get total number of products for pagination
     const productsCount = await ProductModel.countDocuments(filter);
