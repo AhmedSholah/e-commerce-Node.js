@@ -35,12 +35,9 @@ const getProducts = asyncWrapper(async (req, res, next) => {
         }
     }
 
-    const products = await ProductModel.find(
-        { ...filter, isDeleted: false },
-        {
-            __v: false,
-        }
-    )
+    const products = await ProductModel.find(filter, {
+        __v: false,
+    })
         .populate({ path: "soldBy", select: "_id firstName" })
         .sort({ [query.sortBy]: query.sortOrder })
         .skip(skip)
